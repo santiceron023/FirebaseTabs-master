@@ -88,13 +88,13 @@ public class ProductosActivity extends AppCompatActivity {
             Button add = (Button) item.findViewById(R.id.bAddProduct);
             Button prodOk = (Button) item.findViewById(R.id.bProductosOk);
 
-            /*add.setOnClickListener(new View.OnClickListener() {
+            add.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(getContext(),"hola"+String.valueOf(position),Toast.LENGTH_SHORT).show();
                 }
             });
-            prodOk.setOnClickListener(new View.OnClickListener() {
+            /*prodOk.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     finish();
