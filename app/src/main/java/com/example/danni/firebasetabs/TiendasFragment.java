@@ -89,8 +89,11 @@ public class TiendasFragment extends Fragment implements View.OnClickListener {
                 //mMediaPlayer.start();
                 //String a = String.valueOf(position);
                 //Toast.makeText(getActivity(),a,Toast.LENGTH_SHORT).show();
+
+                //match db
+                position += 1;
                 Intent intent = new Intent(getActivity(),ProductosActivity.class);
-                intent.putExtra("TiendaId",position);
+                intent.putExtra("TiendaId",String.valueOf(position));
                 getActivity().startActivity(intent);
             }
         });

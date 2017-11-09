@@ -1,6 +1,7 @@
 package com.example.danni.firebasetabs;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -22,30 +23,39 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+
 public class ProductosActivity extends AppCompatActivity {
     //private Button bTiendas;
     private ListView listaProductos;
     private ArrayList<Productos> productos;
-
+    String tiendaId;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef;
+    //ArrayList<Integer> ProductosArray = new ArrayList<Integer>();
+    int numPedidos = 0;
+    int[] ProductosArray = new int[10]; ///numero de hijos
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_productos);
-        listaProductos = (ListView)findViewById(R.id.listaProductos);
+        listaProductos = (ListView) findViewById(R.id.listaProductos);
+
+
+        Bundle extras = getIntent().getExtras();
+        tiendaId = extras.getString("TiendaId");
+
 
         productos = new ArrayList<Productos>();
-        final Adapter adapter = new Adapter(getApplicationContext(),productos);
+        final Adapter adapter = new Adapter(getApplicationContext(), productos);
         listaProductos.setAdapter(adapter);
 
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Productos");
-
+        myRef = database.getReference("Productos").child(tiendaId);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot datasnapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot datasnapshot : dataSnapshot.getChildren()) {
                     productos.add(datasnapshot.getValue(Productos.class));
                 }
                 adapter.notifyDataSetChanged();
@@ -58,31 +68,30 @@ public class ProductosActivity extends AppCompatActivity {
         });
 
 
-
     }
-
 
 
     class Adapter extends ArrayAdapter<Productos> {
         public Adapter(Context context, ArrayList<Productos> productos) {
-            super(context, R.layout.lista_productos,productos);
+            super(context, R.layout.lista_productos, productos);
         }
 
         @NonNull
         @Override
-        public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            LayoutInflater inflater= LayoutInflater.from(getContext());
-            View item =inflater.inflate(R.layout.lista_productos,null);
+        public View getView(final int position, @Nullable View convertView,
+                            @NonNull ViewGroup parent) {
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            View item = inflater.inflate(R.layout.lista_productos, null);
 
-            Productos productos = getItem(position);
+            final Productos productos = getItem(position);
 
-            TextView tNombre=(TextView)item.findViewById(R.id.tNombre);
+            TextView tNombre = (TextView) item.findViewById(R.id.tNombre);
             tNombre.setText(productos.getNombre());
-            TextView tNegocio=(TextView)item.findViewById(R.id.tCantidadPresentacion);
+            TextView tNegocio = (TextView) item.findViewById(R.id.tCantidadPresentacion);
             tNegocio.setText(productos.getTamaño());
-            TextView tTiempoEnvio=(TextView)item.findViewById(R.id.tMarca);
+            TextView tTiempoEnvio = (TextView) item.findViewById(R.id.tMarca);
             tTiempoEnvio.setText(productos.getMarca());
-            TextView tPedidoMin=(TextView)item.findViewById(R.id.tCostoProducto);
+            TextView tPedidoMin = (TextView) item.findViewById(R.id.tCostoProducto);
             tPedidoMin.setText(productos.getPrecio());
 
             Button add = (Button) item.findViewById(R.id.bAddProduct);
@@ -91,22 +100,102 @@ public class ProductosActivity extends AppCompatActivity {
             add.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getContext(),"hola"+String.valueOf(position),Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(),"CLicked :"+String.valueOf(position),Toast.LENGTH_SHORT).show();
+                    //ProductosArray.add(numPedidos, position);
+                    ProductosArray[position + 1] += 1;
+                    numPedidos++;
                 }
             });
             /*prodOk.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    finish();
+                    Toast.makeText(getContext(),"end",Toast.LENGTH_SHORT).show();
                 }
-            });
-            */
-
-
-
+            });*/
             return item;
         }
 
     }
+
+    public void ok(View view) {
+
+        String a;
+        Toast.makeText(getApplicationContext(), String.valueOf(ProductosArray[1]), Toast.LENGTH_SHORT).show();
+
+
+        myRef = database.getReference("Pedidos").child(tiendaId); //pedidos -- lienda
+        myRef.child("33").setValue("466");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String w = dataSnapshot.child("33").getValue(String.class);
+                Toast.makeText(getApplicationContext(), w, Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 }
+
+        /*for (int factor = 1; factor <= ProductosArray.length; factor++) {
+
+            if (ProductosArray[factor] > 0) {
+                a = String.valueOf(ProductosArray[factor]);
+                myRef.child(String.valueOf(factor)).setValue("cantidad",a);
+            }
+        }
+    }
+
+               /*
+               myRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        //ya esta comparar lo que vale
+                        if (dataSnapshot.child(String.valueOf(a)).exists()){
+
+
+                        }else{
+                            dataSnapshot.set
+                        }
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                    }
+                });
+
+
+            }
+
+
+    }
+/*
+
+     final int id = view.getId();
+
+        final String uidd = eID.getText().toString();
+
+        final String name,email,phone;
+        name = eName.getText().toString();
+        phone = ePhone.getText().toString();
+        email = eEmail.getText().toString();
+        switch (id){
+            case R.id.bCreate:
+                myRef = database.getReference("user").child("user"+uidd);
+                user =  new User(name,email,phone,"user"+uidd);
+                myRef.setValue(user);
+                //uid++;
+                clean();
+                break;
+    */
+        //finish();
+
+
+
 
