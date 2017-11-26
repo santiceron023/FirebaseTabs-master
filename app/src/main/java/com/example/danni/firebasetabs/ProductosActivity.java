@@ -120,10 +120,54 @@ public class ProductosActivity extends AppCompatActivity {
     public void ok(View view) {
 
         String a;
+        int CantidadActual = 0, i = 0;
+
+
         Toast.makeText(getApplicationContext(), String.valueOf(ProductosArray[1]), Toast.LENGTH_SHORT).show();
 
 
+        for (int factor = 1; factor <= ProductosArray.length; factor++) {
+
+            if (ProductosArray[factor] > 0) {
+
+                funcion(factor);
+            }
+        }
+    }
+    private void funcion(final int pos){
         myRef = database.getReference("Pedidos").child(tiendaId); //pedidos -- lienda
+        myRef.addValueEventListener(new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+
+            String valor = dataSnapshot.child(String.valueOf(pos)).getValue(String.class);
+
+            //i++;
+
+
+////////////////////IDEAS:
+/// 1. CREAR CLASE CON POSICIONES Y UN VALOR
+/// LEER MEDIATNE MUMUCHOS GET REREFNCE SIN FOR
+/// CANCELAR
+
+            //CantidadActual = Integer.valueOf(valor);
+
+            //tiendas.add(tiendasSnapshot.getValue(Tiendas.class));
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    });
+    }
+}/*
+
+
+                        a = String.valueOf(ProductosArray[factor]);
+                myRef.child(String.valueOf(factor)).setValue("cantidad",a);
+            }
+
         myRef.child("33").setValue("466");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -194,7 +238,7 @@ public class ProductosActivity extends AppCompatActivity {
                 clean();
                 break;
     */
-        //finish();
+//finish();
 
 
 
